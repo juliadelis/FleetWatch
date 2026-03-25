@@ -1,0 +1,112 @@
+"use client";
+
+import { Vehicle } from "@/types/vehicle";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "./ui/dialog";
+
+interface VehicleDetailsDialogProps {
+  vehicle: Vehicle | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+const formatDateBR = (date: string) => {
+  if (date.length === 10) {
+    const [year, month, day] = date.split("-");
+    return `${day}/${month}/${year}`;
+  }
+
+  return new Intl.DateTimeFormat("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(new Date(date));
+};
+
+const getStatusStyles = (status: string) => {
+  if (status === "Ativo") {
+    return "bg-dark-emerald/10 text-dark-emerald";
+  }
+
+  if (status === "Inativo") {
+    return "bg-ruby-red/10 text-ruby-red";
+  }
+
+  if (status === "Manutenção") {
+    return "bg-indigo-velvet/10 text-indigo-velvet";
+  }
+
+  return "bg-gray-100 text-gray-700";
+};
+
+const DetailItem = ({
+  label,
+  value,
+}: {
+  label: string;
+  value?: string | number | null;
+}) => {
+  return (
+    <div className="rounded-lg border border-gray-200 bg-white p-4">
+      <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+        {label}
+      </p>
+      <p className="mt-1 text-sm font-medium text-pitch-black">
+        {value ?? "—"}
+      </p>
+    </div>
+  );
+};
+
+const VehicleDetailsDialog = ({
+  vehicle,
+  open,
+  onOpenChange,
+}: VehicleDetailsDialogProps) => {
+  if (!vehicle) return null;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-3xl bg-white">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-3 text-pitch-black">
+            <span>Detalhes do veículo</span>
+            <span
+              className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${getStatusStyles(
+                vehicle.status
+              )}`}
+            >
+              {vehicle.status}
+            </span>
+          </DialogTitle>
+
+          <DialogDescription>
+            Visualize todas as informações cadastradas para o veículo{" "}
+            <span className="font-medium text-pitch-black">{vehicle.plate}</span>.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <DetailItem label="Placa" value={vehicle.plate} />
+          <DetailItem label="Ano" value={vehicle.year} />
+          <DetailItem label="Marca" value={vehicle.brand} />
+          <DetailItem label="Modelo" value={vehicle.model} />
+          <DetailItem label="Status" value={vehicle.status} />
+          <DetailItem label="RENAVAM" value={vehicle.renavam} />
+          <DetailItem
+            label="Data de cadastro"
+            value={formatDateBR(vehicle.createdAt)}
+          />
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default VehicleDetailsDialog;

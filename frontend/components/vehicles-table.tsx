@@ -7,6 +7,7 @@ import { Vehicle } from "@/types/vehicle";
 import { ArrowDownUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import VehiclesTableSkeleton from "./vehicle-table-skeleton";
+import VehicleDetailsDialog from "./vehicle-detail-dialog";
 
 const formatDateBR = (date: string) => {
     if (date.length === 10) {
@@ -32,6 +33,8 @@ const normalizeStatus = (status: string) => {
 const VehiclesTable: React.FC = () => {
   const searchParams = useSearchParams();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+const [detailsOpen, setDetailsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
@@ -147,6 +150,11 @@ const VehiclesTable: React.FC = () => {
     return pages;
   };
 
+  const handleOpenDetails = (vehicle: Vehicle) => {
+    setSelectedVehicle(vehicle);
+    setDetailsOpen(true);
+  };
+
   return (
     <div className="space-y-4">
       {loading ? (
@@ -219,10 +227,11 @@ const VehiclesTable: React.FC = () => {
 
               <tbody>
                 {paginatedVehicles.map((vehicle) => (
-                  <tr
-                    key={vehicle.plate}
-                    className="border-t border-gray-100 transition hover:bg-mint-cream/40"
-                  >
+                 <tr
+                 key={vehicle.plate}
+                 onClick={() => handleOpenDetails(vehicle)}
+                 className="cursor-pointer border-t border-gray-100 transition hover:bg-mint-cream/40"
+               >
                     <td className="px-4 py-4 text-sm text-pitch-black">
                       {vehicle.plate}
                     </td>
@@ -310,6 +319,11 @@ const VehiclesTable: React.FC = () => {
               </button>
             </div>
           </div>
+          <VehicleDetailsDialog
+  vehicle={selectedVehicle}
+  open={detailsOpen}
+  onOpenChange={setDetailsOpen}
+/>
         </>
       )}
     </div>
