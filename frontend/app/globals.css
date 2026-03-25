@@ -1,30 +1,27 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-  width: 100%;
+@theme {
+  --color-indigo-velvet: #4b296b;
+--color-dark-emerald: #0b6e4f;
+--color-mint-cream: #ebf5ee;
+--color-ruby-red: #a31621;
+--color-pitch-black: #191102;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
+:root {
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
-  }
+  width: 100%;
+
+
 }
 
+
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  font-family: 'Inter', sans-serif;
+  color: #191102;
+  background: #fdfdfd;
   scroll-behavior: smooth;
 }
 
