@@ -5,6 +5,8 @@ import { Skeleton } from "./ui/skeleton";
 import { Table } from "./ui/table";
 import { Vehicle } from "@/types/vehicle";
 import { ArrowDownUp, ChevronLeft, ChevronRight } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import VehiclesTableSkeleton from "./vehicle-table-skeleton";
 
 const formatDateBR = (date: string) => {
     if (date.length === 10) {
@@ -20,7 +22,15 @@ const formatDateBR = (date: string) => {
     }).format(new Date(date));
   };
 
+const normalizeStatus = (status: string) => {
+    return status
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+};
+
 const VehiclesTable: React.FC = () => {
+  const searchParams = useSearchParams();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,25 +38,43 @@ const VehiclesTable: React.FC = () => {
   const [sortKey, setSortKey] = useState<keyof Vehicle>("plate");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const plateFilter = searchParams.get("placa")?.toLowerCase() || "";
+  const statusFilter = searchParams.get("status")?.toLowerCase() || "";
 
   useEffect(() => {
+    let isMounted = true;
+  
     const fetchVehicles = async () => {
       try {
-        setLoading(true);
-
-        await new Promise((resolve) => setTimeout(resolve, 1200));
-
+        if (isMounted) {
+          setLoading(true);
+          setError(null);
+        }
+  
+        await new Promise((resolve) => setTimeout(resolve, 1600));
+  
         const response = await import("@/lib/mock-data");
         const data = response.mockVehicles;
-        setVehicles(data);
+  
+        if (isMounted) {
+          setVehicles(data);
+        }
       } catch (err) {
-        setError("Falha ao buscar veículos");
+        if (isMounted) {
+          setError("Falha ao buscar veículos");
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
-
+  
     fetchVehicles();
+  
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleSort = (key: keyof Vehicle) => {
@@ -60,8 +88,24 @@ const VehiclesTable: React.FC = () => {
     setCurrentPage(1);
   };
 
+  const filteredVehicles = useMemo(() => {
+    return vehicles.filter((vehicle) => {
+      const matchesPlate = vehicle.plate
+        .toLowerCase()
+        .includes(plateFilter);
+  
+      const matchesStatus = statusFilter
+        ? normalizeStatus(vehicle.status) === statusFilter
+        : true;
+  
+      return matchesPlate && matchesStatus;
+    });
+  }, [vehicles, plateFilter, statusFilter]);
+
+
   const sortedVehicles = useMemo(() => {
-    return [...vehicles].sort((a, b) => {
+    return [...filteredVehicles].sort((a, b) => {
+   
       const aValue = a[sortKey];
       const bValue = b[sortKey];
 
@@ -69,7 +113,11 @@ const VehiclesTable: React.FC = () => {
       if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
       return 0;
     });
-  }, [vehicles, sortKey, sortDirection]);
+  }, [filteredVehicles, sortKey, sortDirection]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [plateFilter, statusFilter]);
 
   const totalPages = Math.ceil(sortedVehicles.length / itemsPerPage);
 
@@ -99,51 +147,17 @@ const VehiclesTable: React.FC = () => {
     return pages;
   };
 
-  const renderSkeletonTable = () => {
-    return (
-      <div className="w-full border border-gray-200 rounded-xl overflow-hidden">
-        <div className="bg-mint-cream border-b border-gray-200 px-4 py-4">
-          <Skeleton className="h-5 w-40" />
-        </div>
-
-        <div className="divide-y divide-gray-100">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <div
-              key={index}
-              className="grid grid-cols-5 gap-4 px-4 py-4 items-center"
-            >
-              <Skeleton className="h-4 w-20" />
-              <Skeleton className="h-4 w-32" />
-              <Skeleton className="h-4 w-12" />
-              <Skeleton className="h-6 w-24 rounded-full" />
-              <Skeleton className="h-4 w-28" />
-            </div>
-          ))}
-        </div>
-
-        <div className="flex items-center justify-between px-4 py-4 border-t border-gray-100">
-          <Skeleton className="h-4 w-40" />
-          <div className="flex gap-2">
-            <Skeleton className="h-9 w-9 rounded-md" />
-            <Skeleton className="h-9 w-9 rounded-md" />
-            <Skeleton className="h-9 w-9 rounded-md" />
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="space-y-4">
       {loading ? (
-        renderSkeletonTable()
-      ) : error ? (
+  <VehiclesTableSkeleton />
+) : error ? (
         <div className="rounded-xl border border-ruby-red/20 bg-ruby-red/5 px-4 py-3 text-sm text-ruby-red">
           {error}
         </div>
       ) : paginatedVehicles.length === 0 ? (
         <div className="rounded-xl border border-gray-200 px-4 py-8 text-center text-sm text-gray-500">
-          Veículos não encontrados
+          Veículo não encontrado
         </div>
       ) : (
         <>
@@ -302,4 +316,8 @@ const VehiclesTable: React.FC = () => {
   );
 };
 
+
+
 export default VehiclesTable;
+
+
