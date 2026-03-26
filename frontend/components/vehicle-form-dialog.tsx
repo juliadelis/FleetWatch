@@ -125,15 +125,15 @@ const VehicleFormDialog = ({
         }
       }}
     >
-      {trigger ? (
-        <DialogTrigger asChild>{trigger}</DialogTrigger>
-      ) : (
-        <DialogTrigger asChild>
-          <Button className="bg-dark-emerald text-white hover:bg-dark-emerald/90">
-            Novo Veículo
-          </Button>
-        </DialogTrigger>
-      )}
+      {controlledOpen === undefined && (
+  <DialogTrigger asChild>
+    {trigger ?? (
+      <Button className="bg-dark-emerald py-5 px-4 text-[16px] text-white cursor-pointer">
+        Novo Veículo
+      </Button>
+    )}
+  </DialogTrigger>
+)}
 
       <DialogContent
         className="bg-white sm:max-w-[560px]"
@@ -352,6 +352,7 @@ const VehicleFormDialog = ({
             <Button
               type="button"
               variant="outline"
+              className="cursor-pointer"
               onClick={() => handleOpenChange(false)}
               disabled={saveVehicleMutation.isPending}
             >
@@ -360,7 +361,7 @@ const VehicleFormDialog = ({
 
             <Button
               type="submit"
-              className="bg-dark-emerald text-white hover:bg-dark-emerald/90"
+              className="bg-dark-emerald text-white hover:bg-dark-emerald/90 cursor-pointer"
               disabled={saveVehicleMutation.isPending}
             >
               {saveVehicleMutation.isPending ? "Salvando..." : "Salvar"}

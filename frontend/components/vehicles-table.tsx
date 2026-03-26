@@ -294,6 +294,7 @@ const VehiclesTable: React.FC = () => {
       <td className="px-4 py-4">
         <div className="flex items-center justify-end gap-2">
           <Button
+          className="cursor-pointer"
             type="button"
             variant="outline"
             size="icon"
@@ -303,6 +304,7 @@ const VehiclesTable: React.FC = () => {
           </Button>
 
           <Button
+          className="cursor-pointer"
             type="button"
             variant="outline"
             size="icon"
@@ -312,6 +314,7 @@ const VehiclesTable: React.FC = () => {
           </Button>
 
           <Button
+          className="cursor-pointer"
             type="button"
             variant="outline"
             size="icon"

@@ -66,6 +66,7 @@ const DeleteVehicleDialog = ({
 
         <DialogFooter className="flex gap-2">
           <Button
+          className="cursor-pointer"
             type="button"
             variant="outline"
             onClick={() => onOpenChange(false)}
@@ -75,6 +76,7 @@ const DeleteVehicleDialog = ({
           </Button>
 
           <Button
+          className="cursor-pointer"
             type="button"
             variant="destructive"
             onClick={() => deleteVehicleMutation.mutate()}
