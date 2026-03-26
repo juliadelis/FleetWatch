@@ -6,6 +6,10 @@ import { useSearchParams } from "next/navigation";
 import { Table } from "./ui/table";
 import { Vehicle } from "@/types/vehicle";
 import { ArrowDownUp, ChevronLeft, ChevronRight } from "lucide-react";
+import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Button } from "./ui/button";
+import VehicleFormDialog from "./vehicle-form-dialog";
+import DeleteVehicleDialog from "./delete-vehicle-dialog";
 
 import { getVehicles } from "@/lib/queries/get-vehicles";
 import VehiclesTableSkeleton from "./vehicle-table-skeleton";
@@ -42,6 +46,8 @@ const VehiclesTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const itemsPerPage = 10;
 
@@ -169,6 +175,16 @@ const VehiclesTable: React.FC = () => {
     );
   }
 
+  const handleOpenEdit = (vehicle: Vehicle) => {
+    setSelectedVehicle(vehicle);
+    setEditOpen(true);
+  };
+  
+  const handleOpenDelete = (vehicle: Vehicle) => {
+    setSelectedVehicle(vehicle);
+    setDeleteOpen(true);
+  };
+
   return (
     <div className="space-y-4">
       <div className="w-full overflow-x-auto rounded-xl border border-gray-200">
@@ -224,57 +240,90 @@ const VehiclesTable: React.FC = () => {
                   Cadastrado em <ArrowDownUp size={16} />
                 </button>
               </th>
+              <th className="px-4 py-3 text-right text-sm font-semibold text-pitch-black">
+  Ações
+</th>
             </tr>
           </thead>
 
           <tbody>
-            {paginatedVehicles.map((vehicle) => (
-              <tr
-                key={vehicle.plate}
-                onClick={() => handleOpenDetails(vehicle)}
-                className="cursor-pointer border-t border-gray-100 transition hover:bg-mint-cream/40"
-              >
-                <td className="px-4 py-4 text-sm font-medium text-dark-emerald">
-                  {vehicle.plate}
-                </td>
-                <td className="px-4 py-4 text-sm text-pitch-black">
-                  {vehicle.brand} {vehicle.model}
-                </td>
-                <td className="px-4 py-4 text-sm text-pitch-black">
-                  {vehicle.year}
-                </td>
-                <td className="px-4 py-4 text-sm">
-                  <div className="min-w-[90px]">
-                    <span
-                      className={`
-                        inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium
-                        ${
-                          vehicle.status === "Ativo"
-                            ? "bg-dark-emerald/10 text-dark-emerald"
-                            : ""
-                        }
-                        ${
-                          vehicle.status === "Inativo"
-                            ? "bg-ruby-red/10 text-ruby-red"
-                            : ""
-                        }
-                        ${
-                          vehicle.status === "Manutenção"
-                            ? "bg-indigo-velvet/10 text-indigo-velvet"
-                            : ""
-                        }
-                      `}
-                    >
-                      {vehicle.status}
-                    </span>
-                  </div>
-                </td>
-                <td className="px-4 py-4 text-sm text-gray-500">
-                  {formatDateBR(vehicle.createdAt)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
+  {paginatedVehicles.map((vehicle) => (
+    <tr
+      key={vehicle.id}
+      className="border-t border-gray-100 transition hover:bg-mint-cream/40"
+    >
+      <td className="px-4 py-4 text-sm font-medium text-dark-emerald">
+        {vehicle.plate}
+      </td>
+      <td className="px-4 py-4 text-sm text-pitch-black">
+        {vehicle.brand} {vehicle.model}
+      </td>
+      <td className="px-4 py-4 text-sm text-pitch-black">
+        {vehicle.year}
+      </td>
+      <td className="px-4 py-4 text-sm">
+        <div className="min-w-[90px]">
+          <span
+            className={`
+              inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium
+              ${
+                vehicle.status === "Ativo"
+                  ? "bg-dark-emerald/10 text-dark-emerald"
+                  : ""
+              }
+              ${
+                vehicle.status === "Inativo"
+                  ? "bg-ruby-red/10 text-ruby-red"
+                  : ""
+              }
+              ${
+                vehicle.status === "Manutenção"
+                  ? "bg-indigo-velvet/10 text-indigo-velvet"
+                  : ""
+              }
+            `}
+          >
+            {vehicle.status}
+          </span>
+        </div>
+      </td>
+      <td className="px-4 py-4 text-sm text-gray-500">
+        {formatDateBR(vehicle.createdAt)}
+      </td>
+
+      <td className="px-4 py-4">
+        <div className="flex items-center justify-end gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={() => handleOpenDetails(vehicle)}
+          >
+            <Eye size={16} />
+          </Button>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={() => handleOpenEdit(vehicle)}
+          >
+            <Pencil size={16} />
+          </Button>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={() => handleOpenDelete(vehicle)}
+          >
+            <Trash2 size={16} />
+          </Button>
+        </div>
+      </td>
+    </tr>
+  ))}
+</tbody>
         </Table>
       </div>
 
@@ -331,6 +380,18 @@ const VehiclesTable: React.FC = () => {
         open={detailsOpen}
         onOpenChange={setDetailsOpen}
       />
+
+<VehicleFormDialog
+  vehicle={selectedVehicle}
+  open={editOpen}
+  onOpenChange={setEditOpen}
+/>
+
+<DeleteVehicleDialog
+  vehicle={selectedVehicle}
+  open={deleteOpen}
+  onOpenChange={setDeleteOpen}
+/>
     </div>
   );
 };

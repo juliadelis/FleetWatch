@@ -5,7 +5,7 @@ import { VehicleStatusFilter } from '@/components/vehicle-status-filter';
 import VehiclesTableSkeleton from '@/components/vehicle-table-skeleton';
 import VehiclesTable from '@/components/vehicles-table';
 import React from 'react';
-import NewVehicleDialog from "@/components/new-vehicle-dialog";
+import VehicleFormDialog from "@/components/vehicle-form-dialog";
 
 
 const Page: React.FC = () => {
@@ -14,7 +14,7 @@ const Page: React.FC = () => {
             <div>
                 <h2 className='font-bold text-3xl text-dark-emerald'>Gerenciamento de veículos</h2>
             </div>
-<div><NewVehicleDialog /></div>
+<div><VehicleFormDialog /></div>
             
 
             <div className='flex gap-3 rounded-xl border border-gray-200 px-4 py-4 md:items-center '>

@@ -1,14 +1,21 @@
+export type VehicleStatus = "Ativo" | "Inativo" | "Manutenção";
+
 export interface NewVehicle {
-    plate: string;
-    brand: string;
-    model: string;
-    year: number;
-    renavam: string;
-    
-  }
-  
-  export interface Vehicle extends NewVehicle {
-    id: string;
-    status: "Ativo" | "Inativo" | "Manutenção";
-    createdAt: string;
-  }
+  plate: string;
+  brand: string;
+  model: string;
+  year: number;
+  renavam: string;
+  status?: VehicleStatus;
+}
+
+export interface Vehicle {
+  id: string;
+  plate: string;
+  brand: string;
+  model: string;
+  year: number;
+  renavam: string;
+  status: VehicleStatus;
+  createdAt: string;
+}

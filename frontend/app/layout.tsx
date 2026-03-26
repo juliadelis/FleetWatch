@@ -1,5 +1,9 @@
+
+
 import "./globals.css";
 import { Providers } from "./providers";
+
+
 
 export default function RootLayout({ children }) {
   return (
@@ -8,7 +12,11 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/icon.ico" />
       </head>
       <body suppressHydrationWarning >
-      <Providers>{children}</Providers>
+      <Providers>
+     
+        {children}
+        
+      </Providers>
       </body>
     </html>
   );
