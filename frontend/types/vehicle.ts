@@ -1,10 +1,14 @@
-export interface Vehicle {
-    id: number;
+export interface NewVehicle {
     plate: string;
     brand: string;
     model: string;
     year: number;
     renavam: string;
-    status: string;
+    
+  }
+  
+  export interface Vehicle extends NewVehicle {
+    id: string;
+    status: "Ativo" | "Inativo" | "Manutenção";
     createdAt: string;
-}
+  }
