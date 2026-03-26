@@ -76,9 +76,9 @@ const DeleteVehicleDialog = ({
           </Button>
 
           <Button
-          className="cursor-pointer"
-            type="button"
-            variant="destructive"
+          className="bg-ruby-red  text-white cursor-pointer"
+           
+            
             onClick={() => deleteVehicleMutation.mutate()}
             disabled={deleteVehicleMutation.isPending}
           >
