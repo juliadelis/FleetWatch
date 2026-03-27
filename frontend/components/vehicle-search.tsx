@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Search } from "lucide-react";
-import { useDebounce } from "./hooks/use-debounce";
+import { useDebounce } from "../hooks/use-debounce";
 
 export const VehicleSearch = () => {
   const router = useRouter();

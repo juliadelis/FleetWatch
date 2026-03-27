@@ -8,42 +8,14 @@ import {
   DialogTitle,
   DialogDescription,
 } from "./ui/dialog";
+import { formatDateBR, getStatusStyles } from "@/lib/utils";
+import { VehicleStatusBadge } from "./vehicle-status-badge";
 
 interface VehicleDetailsDialogProps {
   vehicle: Vehicle | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
-
-const formatDateBR = (date: string) => {
-  if (date.length === 10) {
-    const [year, month, day] = date.split("-");
-    return `${day}/${month}/${year}`;
-  }
-
-  return new Intl.DateTimeFormat("pt-BR", {
-    timeZone: "America/Sao_Paulo",
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(new Date(date));
-};
-
-const getStatusStyles = (status: string) => {
-  if (status === "Ativo") {
-    return "bg-dark-emerald/10 text-dark-emerald";
-  }
-
-  if (status === "Inativo") {
-    return "bg-ruby-red/10 text-ruby-red";
-  }
-
-  if (status === "Manutenção") {
-    return "bg-indigo-velvet/10 text-indigo-velvet";
-  }
-
-  return "bg-gray-100 text-gray-700";
-};
 
 const DetailItem = ({
   label,
@@ -77,18 +49,15 @@ const VehicleDetailsDialog = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3 text-pitch-black">
             <span>Detalhes do veículo</span>
-            <span
-              className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${getStatusStyles(
-                vehicle.status
-              )}`}
-            >
-              {vehicle.status}
-            </span>
+            <VehicleStatusBadge status={vehicle.status} />
           </DialogTitle>
 
           <DialogDescription>
             Visualize todas as informações cadastradas para o veículo{" "}
-            <span className="font-medium text-pitch-black">{vehicle.plate}</span>.
+            <span className="font-medium text-pitch-black">
+              {vehicle.plate}
+            </span>
+            .
           </DialogDescription>
         </DialogHeader>
 
