@@ -16,6 +16,8 @@ import VehiclesTableSkeleton from "./vehicle-table-skeleton";
 import VehicleDetailsDialog from "./vehicle-detail-dialog";
 import { formatDateBR, getStatusStyles } from "@/lib/utils";
 import { VehicleStatusBadge } from "./vehicle-status-badge";
+import { Pagination } from "./pagination";
+import { SortIcon } from "./sort-icon";
 
 const normalizeStatus = (status: string) =>
   status
@@ -178,7 +180,12 @@ const VehiclesTable: React.FC = () => {
                   className="flex items-center gap-2"
                   onClick={() => handleSort("plate")}
                 >
-                  Placa <ArrowDownUp size={16} />
+                  Placa{" "}
+                  <SortIcon
+                    column="plate"
+                    sortKey={sortKey}
+                    sortDirection={sortDirection}
+                  />
                 </button>
               </th>
 
@@ -188,7 +195,12 @@ const VehiclesTable: React.FC = () => {
                   className="flex items-center gap-2"
                   onClick={() => handleSort("brand")}
                 >
-                  Marca/Modelo <ArrowDownUp size={16} />
+                  Marca/Modelo{" "}
+                  <SortIcon
+                    column="brand"
+                    sortKey={sortKey}
+                    sortDirection={sortDirection}
+                  />
                 </button>
               </th>
 
@@ -198,7 +210,12 @@ const VehiclesTable: React.FC = () => {
                   className="flex items-center gap-2"
                   onClick={() => handleSort("year")}
                 >
-                  Ano <ArrowDownUp size={16} />
+                  Ano{" "}
+                  <SortIcon
+                    column="year"
+                    sortKey={sortKey}
+                    sortDirection={sortDirection}
+                  />
                 </button>
               </th>
 
@@ -208,7 +225,12 @@ const VehiclesTable: React.FC = () => {
                   className="flex items-center gap-2"
                   onClick={() => handleSort("status")}
                 >
-                  Status <ArrowDownUp size={16} />
+                  Status{" "}
+                  <SortIcon
+                    column="status"
+                    sortKey={sortKey}
+                    sortDirection={sortDirection}
+                  />
                 </button>
               </th>
 
@@ -218,7 +240,12 @@ const VehiclesTable: React.FC = () => {
                   className="flex items-center gap-2"
                   onClick={() => handleSort("createdAt")}
                 >
-                  Cadastrado em <ArrowDownUp size={16} />
+                  Cadastrado em{" "}
+                  <SortIcon
+                    column="createdAt"
+                    sortKey={sortKey}
+                    sortDirection={sortDirection}
+                  />
                 </button>
               </th>
               <th className="px-4 py-3 text-right text-sm font-semibold text-pitch-black">
@@ -254,7 +281,6 @@ const VehiclesTable: React.FC = () => {
                 <td className="px-4 py-4">
                   <div className="flex items-center justify-end gap-2">
                     <Button
-                      className="cursor-pointer"
                       type="button"
                       variant="outline"
                       size="icon"
@@ -264,7 +290,6 @@ const VehiclesTable: React.FC = () => {
                     </Button>
 
                     <Button
-                      className="cursor-pointer"
                       type="button"
                       variant="outline"
                       size="icon"
@@ -274,7 +299,6 @@ const VehiclesTable: React.FC = () => {
                     </Button>
 
                     <Button
-                      className="cursor-pointer"
                       type="button"
                       variant="outline"
                       size="icon"
@@ -290,54 +314,14 @@ const VehiclesTable: React.FC = () => {
         </Table>
       </div>
 
-      <div className="flex flex-col gap-3 rounded-xl border border-gray-200 px-4 py-4 md:flex-row md:items-center md:justify-between">
-        <p className="text-sm text-gray-500">
-          Mostrando{" "}
-          <span className="font-medium text-pitch-black">{startItem}</span>–
-          <span className="font-medium text-pitch-black">{endItem}</span> de{" "}
-          <span className="font-medium text-pitch-black">
-            {sortedVehicles.length}
-          </span>{" "}
-          veículos
-        </p>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="inline-flex h-9 cursor-pointer items-center justify-center rounded-md border border-gray-200 px-3 text-sm font-medium text-pitch-black transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <ChevronLeft size={16} />
-          </button>
-
-          {getVisiblePages().map((page) => (
-            <button
-              key={page}
-              type="button"
-              onClick={() => setCurrentPage(page)}
-              className={`inline-flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md border px-3 text-sm font-medium transition ${
-                currentPage === page
-                  ? "border-dark-emerald bg-dark-emerald text-white"
-                  : "border-gray-200 text-pitch-black hover:bg-gray-50"
-              }`}
-            >
-              {page}
-            </button>
-          ))}
-
-          <button
-            type="button"
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-            className="inline-flex h-9 cursor-pointer items-center justify-center rounded-md border border-gray-200 px-3 text-sm font-medium text-pitch-black transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <ChevronRight size={16} />
-          </button>
-        </div>
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        startItem={startItem}
+        endItem={endItem}
+        totalItems={sortedVehicles.length}
+        onPageChange={setCurrentPage}
+      />
 
       <VehicleDetailsDialog
         vehicle={selectedVehicle}
