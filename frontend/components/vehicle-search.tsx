@@ -1,35 +1,50 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { Search } from "lucide-react";
+import { useDebounce } from "./hooks/use-debounce";
 
 export const VehicleSearch = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [value, setValue] = useState("");
+
+  const placaParam = (searchParams.get("placa") || "").toUpperCase();
+
+  const [value, setValue] = useState(placaParam);
+  const debouncedValue = useDebounce(value, 400);
+
+  const lastTypedValueRef = useRef(placaParam);
+
+ 
+  useEffect(() => {
+    if (placaParam !== lastTypedValueRef.current) {
+      setValue(placaParam);
+      lastTypedValueRef.current = placaParam;
+    }
+  }, [placaParam]);
 
   useEffect(() => {
-    const placa = searchParams.get("placa") || "";
-    setValue(placa);
-  }, [searchParams]);
+    const normalized = debouncedValue.trim().toUpperCase();
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      const params = new URLSearchParams(searchParams.toString());
+    if (normalized === placaParam) return;
+    if(debouncedValue !== lastTypedValueRef.current) return;
 
-      if (value.trim()) {
-        params.set("placa", value.trim());
-      } else {
-        params.delete("placa");
-      }
+    const params = new URLSearchParams(searchParams.toString());
 
-      const query = params.toString();
-      router.push(query ? `?${query}` : "?");
-    }, 400);
+    if (normalized) {
+      params.set("placa", normalized);
+    } else {
+      params.delete("placa");
+    }
 
-    return () => clearTimeout(timeout);
-  }, [value]);
+    const query = params.toString();
+
+    router.replace(query ? `${pathname}?${query}` : pathname, {
+      scroll: false,
+    });
+  }, [debouncedValue, placaParam, pathname, router, searchParams]);
 
   return (
     <div className="relative w-full max-w-sm">
@@ -42,7 +57,11 @@ export const VehicleSearch = () => {
         type="text"
         placeholder="Buscar placa..."
         value={value}
-        onChange={(e) => setValue(e.target.value.toUpperCase())}
+        onChange={(e) => {
+          const nextValue = e.target.value.toUpperCase();
+          setValue(nextValue);
+          lastTypedValueRef.current = nextValue;
+        }}
         className="w-full rounded-md border border-gray-200 py-2 pl-9 pr-3 text-sm outline-none transition focus:border-dark-emerald focus:ring-2 focus:ring-dark-emerald/20"
       />
     </div>

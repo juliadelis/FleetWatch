@@ -14,9 +14,10 @@ const Page: React.FC = () => {
             <div>
                 <h2 className='font-bold text-3xl text-dark-emerald'>Gerenciamento de veículos</h2>
             </div>
-<div><VehicleFormDialog /></div>
+            <div>
+                <VehicleFormDialog />
+            </div>
             
-
             <div className='flex gap-3 rounded-xl border border-gray-200 px-4 py-4 md:items-center '>
                 <VehicleSearch />
                 <VehicleStatusFilter />
@@ -24,8 +25,8 @@ const Page: React.FC = () => {
             </div>
             
             <Suspense fallback={<VehiclesTableSkeleton />}>
-        <VehiclesTable />
-      </Suspense>
+                <VehiclesTable />
+            </Suspense>
         </div>
     );
 };
