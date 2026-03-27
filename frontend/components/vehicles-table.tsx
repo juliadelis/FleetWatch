@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { Table } from "./ui/table";
 import { Vehicle } from "@/types/vehicle";
-import { ArrowDownUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { Button } from "./ui/button";
 import VehicleFormDialog from "./vehicle-form-dialog";

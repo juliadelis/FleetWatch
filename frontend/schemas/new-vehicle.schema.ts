@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const currentYear = 2026;
+const currentYear = new Date().getFullYear();
 
 const mercosulPlateRegex = /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/;
 const renavamRegex = /^[0-9]{11}$/;
@@ -27,8 +27,8 @@ export const newVehicleSchema = z.object({
 
   year: z
     .number()
-    .min(1990, "O ano deve estar entre 1990 e 2026.")
-    .max(currentYear, "O ano deve estar entre 1990 e 2026."),
+    .min(1990, "O ano deve ser maior que 1990.")
+    .max(currentYear, "O ano não deve superar o atual"),
 
   renavam: z
     .string()
